@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head> 
+
+<title> Calculatowr UwU </title>
+
+</head>
+
+<body>
+
+
+<h1> Nyalculatowr (dies of cringe) </h1>
+<br>
+
+
+<input type="text" id="result" readonly>
+<br>
+
+<button type="button" onclick="myFunction('7')"> 7 </button>
+<button type="button" onclick="myFunction('8')"> 8 </button>
+<button type="button" onclick="myFunction('9')"> 9 </button>
+<br>
+<button type="button" onclick="myFunction('4')"> 4 </button>
+<button type="button" onclick="myFunction('5')"> 5 </button>
+<button type="button" onClick="myFunction('6')"> 6 </button>
+<br>
+<button type="button" onClick="myFunction('3')"> 3 </button>
+<button type="button" onClick="myFunction('2')"> 2 </button>
+<button type="button" onClick="myFunction('1')"> 1 </button>
+<br>
+<button type="button" onClick="myFunction('0')"> 0 </button>
+<button type="button" onClick="myFunction('00')"> 00 </button>
+<button type="button" onClick="myFunction('.')"> . </button>
+<br>
+<button type="button" onClick="myFunction('+')"> + </button>
+<button type="button" onClick="myFunction('-')"> - </button>
+<button type="button" onClick="myFunction('x')"> x </button>
+<button type="button" onClick="myFunction('/')"> / </button>
+<br>
+<button type="button" onClick="Calculate()"> Let the magic happen! </button>
+
+<script>
+var result = document.getElementById('result');
+
+function myFunction(value) {
+result.value += value; 
+}
+
+function Calculate(value) {
+try{
+result.value = eval(result.value);
+} catch (error) {
+result.value = "Error";
+}
+}
+
+</script>
+</body>
+</html>
