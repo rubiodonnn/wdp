@@ -1,0 +1,16 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.image {
+    text-align: center; 
+}
+
+.product-image {
+    max-width: 100px; 
+    max-height: 100px; 
+    display: inline-block;
+}
