@@ -9,13 +9,13 @@ let products = [
     {
         "id": 2,
         "name": "LD02 LOUNGE CHAIR",
-        "price": 3450,
+        "price": 3490,
         "image": "image/2.png"
     },
     {
         "id": 3,
         "name": "LD03 LOUNGE CHAIR",
-        "price": 1090,
+        "price": 990,
         "image": "image/3.png"
     },
     {
@@ -27,37 +27,36 @@ let products = [
     {
         "id": 5,
         "name": "LD05 LOUNGE CHAIR",
-        "price": 6590,
+        "price": 6099,
         "image": "image/5.png"
     },
     {
         "id": 6,
         "name": "LD06 LOUNGE CHAIR",
-        "price": 2390,
+        "price": 1390,
         "image": "image/6.png"
     },
     {
         "id": 7,
         "name": "LD07 LOUNGE CHAIR",
-        "price": 1349,
+        "price": 1150,
         "image": "image/7.png"
     },
     {
         "id": 8,
         "name": "LD08 LOUNGE CHAIR",
-        "price": 2190,
+        "price": 1750,
         "image": "image/8.png"
     }
 ];
 
 // Function to create product HTML
 function createProductHTML(product) {
-  
     return `
         <div class="banner-item">
             <img src="${product.image}" alt="${product.name}">
             <p>${product.name}</p>
-            <p>₱ ${product.price.toFixed(2)}</p>
+            <p>PHP${product.price.toFixed(2)}</p>
         </div>
     `;
 }

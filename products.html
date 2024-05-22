@@ -42,7 +42,7 @@
     </div>
 </div>
 
-  <!-- Checkout Modal -->
+<!-- Checkout Modal -->
 <div id="checkoutModal" class="modal">
     <div class="modal-content">
         <span class="close-modal">&times;</span>
@@ -68,12 +68,35 @@
             <h3>Cart Items</h3>
             <div class="row">
                 <div class="listCart"></div>
-                <div id="totalAmount"></div>
+                <div id="totalAmountModal"></div>
+            </div>
+        </div>
+        <div class="payment-details">
+            <h3>Payment</h3>
+            <div class="form-group">
+                <label for="amountPaid">Amount Paid:</label>
+                <input type="number" id="amountPaid" name="amountPaid" placeholder="Enter the amount paid">
+            </div>
+            <div class="form-group">
+                <label for="change">Change:</label>
+                <input type="text" id="change" name="change" readonly>
             </div>
         </div>
         <div class="btn">
             <button class="close-modal"><i class="fas fa-times"></i> CLOSE</button>
             <button class="confirm-checkout"><i class="fas fa-check"></i> Confirm Checkout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal success-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h1>Success!</h1>
+        <p class="success-message">Thank you for your purchase!</p>
+        <div class="success-items">
+            <!-- Successfully added items will be displayed here -->
         </div>
     </div>
 </div>
@@ -84,35 +107,131 @@
 <script src="app.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const checkoutButton = document.querySelector('.checkOut');
-        const closeModalButtons = document.querySelectorAll('.close-modal');
-    
-        const checkoutModal = document.getElementById('checkoutModal');
-    
-        checkoutButton.addEventListener('click', function() {
-            checkoutModal.style.display = 'block';
-        });
-    
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                checkoutModal.style.display = 'none';
-            });
-        });
-    
-        window.addEventListener('click', function(event) {
-            if (event.target === checkoutModal) {
-                checkoutModal.style.display = 'none';
-            }
+    const checkoutButton = document.querySelector('.checkOut');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const checkoutModal = document.getElementById('checkoutModal');
+    const successModal = document.getElementById('successModal'); // New
+    const amountPaidInput = document.getElementById('amountPaid');
+    const changeInput = document.getElementById('change');
+    const confirmCheckoutBtn = document.querySelector('.confirm-checkout');
+
+    let totalAmount = 0;
+
+    checkoutButton.addEventListener('click', function() {
+        totalAmount = cart.reduce((total, item) => {
+            let product = products.find(p => p.id == item.product_id);
+            return total + (product.price * item.quantity);
+        }, 0);
+
+        addCartToHTMLInModal();
+        checkoutModal.style.display = 'block';
+    });
+
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            checkoutModal.style.display = 'none';
+            successModal.style.display = 'none'; // New
         });
     });
 
-    const confirmCheckoutBtn = document.querySelector('.confirm-checkout');
-    confirmCheckoutBtn.addEventListener('click', () => {
-    alert('Thank you for your purchase!');
-    const modal = document.getElementById('checkoutModal');
-    modal.style.display = 'none';
-});
+    window.addEventListener('click', function(event) {
+        if (event.target === checkoutModal) {
+            checkoutModal.style.display = 'none';
+            successModal.style.display = 'none'; // New
+        }
+    });
 
-    </script>
+    amountPaidInput.addEventListener('input', function() {
+        const amountPaid = parseFloat(amountPaidInput.value) || 0;
+        const change = amountPaid - totalAmount;
+        changeInput.value = change >= 0 ? '₱' + change.toFixed(2) : 'Insufficient amount';
+    });
+
+    confirmCheckoutBtn.addEventListener('click', () => {
+    const amountPaid = parseFloat(amountPaidInput.value) || 0;
+    if (amountPaid >= totalAmount) {
+        // Display success modal if payment is valid
+        successModal.style.display = 'block';
+        checkoutModal.style.display = 'none';
+
+        // Display successfully added items in the success modal
+        const successItemsContainer = document.querySelector('#successModal .success-items');
+        successItemsContainer.innerHTML = '';
+        cart.forEach(item => {
+            let product = products.find(p => p.id == item.product_id);
+            if (product) {
+                let newItem = document.createElement('div');
+                newItem.classList.add('item');
+                newItem.innerHTML = `
+                    <div class="image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                `;
+                successItemsContainer.appendChild(newItem);
+            }
+        });
+
+        // Clear cart and inputs
+        cart = [];
+        addCartToHTML();
+        addCartToMemory();
+        amountPaidInput.value = '';
+        changeInput.value = '';
+    } else {
+        // Alert if payment is insufficient
+        alert('Insufficient amount paid.');
+    }
+    });
+
+
+
+    const addCartToHTMLInModal = () => {
+        let cartDetailsModal = document.querySelector('.cart-details .listCart');
+        cartDetailsModal.innerHTML = '';
+
+        if (cart.length > 0) {
+            let rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+
+            cart.forEach(item => {
+                let positionProduct = products.findIndex((value) => value.id == item.product_id);
+                let info = products[positionProduct];
+                if (info) {
+                    let newItem = document.createElement('div');
+                    newItem.classList.add('item');
+                    newItem.dataset.id = item.product_id;
+                    newItem.innerHTML = `
+                        <div class="card">
+                            <div class="image">
+                                <img src="${info.image}" alt="${info.name}" class="product-image">
+                            </div>
+                            <div class="info">
+                                <div class="name">${info.name} (Qty: ${item.quantity})</div>
+                                <div class="totalPrice">₱${info.price * item.quantity}</div>
+                            </div>
+                        </div>
+                    `;
+                    rowContainer.appendChild(newItem);
+                }
+            });
+
+            cartDetailsModal.appendChild(rowContainer);
+            let totalElementModal = document.createElement('div');
+            totalElementModal.classList.add('total');
+            totalElementModal.innerHTML = `Total: ₱${totalAmount.toFixed(2)}`;
+            cartDetailsModal.appendChild(totalElementModal);
+        }
+    };
+
+    window.addEventListener('click', function(event) {
+    if (event.target === successModal) {
+        successModal.style.display = 'none';
+    }
+    });
+
+    initApp();
+});
+   
+</script>
 </body>
 </html>

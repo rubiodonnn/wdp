@@ -299,3 +299,33 @@ nav a:hover {
 }
 
 
+/* Modal styles  success */
+
+.success-modal .modal-content {
+    text-align: center;
+}
+
+.success-modal .success-message {
+    color: green; /* Green text color */
+}
+
+.success-modal .success-items {
+    margin-top: 20px;
+}
+
+.success-modal .success-items .item {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.success-modal .success-items .item .image {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.success-modal .success-items .item .image img {
+    width: 100%;
+    height: auto;
+}
